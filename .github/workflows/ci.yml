@@ -1,0 +1,21 @@
+name: CI
+
+# main 대상 PR과 main·개인 브랜치(sub_*) push마다 빠른 테스트를 돌린다.
+# integration 마커(LEAN .NET 툴체인 필요)는 pyproject addopts로 기본 제외된다.
+on:
+  push:
+    branches: [main, "sub_*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
